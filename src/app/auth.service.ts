@@ -191,6 +191,17 @@ export class AuthService {
     )
   }
 
+  // Load commission by username
+  getComm(username: any): Observable<any> {
+    let api = `${this.endpoint}/commission/${username}`;
+    return this.http.get(api, {headers: this.headers}).pipe(
+      map((res: any) => {
+        return res || {}
+      }),
+      catchError(this.handleError)
+    )
+  }
+
   public getComms(): Observable<any> {
     let api = `${this.endpoint}/commissions`;
 
@@ -231,22 +242,16 @@ export class AuthService {
   {
     console.log(username);
     console.log(commission);
-    var commList;
-    this.getComms().subscribe((res : any) => { //get the list of all commission objects
-      commList = res;
+    var commObj;
+    this.getComm(username).subscribe((res : any) => { //get the list of all commission objects
+      commObj = res;
       var _id, total; //container for Mongo-side id, total commission amt, and num commissions
       let num = 0;
-      for (let commObj of commList)
-      {
-        if (commObj["username"] == username)
-        {
-          _id = commObj["_id"];
-          console.log(username); //store this object's _id
-          total = parseFloat(commObj.totalCommissionAmt); //store this user's current total
-          num = parseInt(commObj.totalNumCommissions); //store this user's current num commissions\
-          return; 
-        }
-      }
+
+      _id = commObj._id;
+      console.log(username); //store this object's _id
+      total = parseFloat(commObj.totalCommissionAmt); //store this user's current total
+      num = parseInt(commObj.totalNumCommissions); //store this user's current num commissions\
 
       total += commission; //once found, add commission to that totalCommissionAmt
       ++num; // and increment the totalNumCommissions

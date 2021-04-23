@@ -372,6 +372,19 @@ router.get('/items', (req, res) => {
         });
 })
 
+
+// GET the requested commission data
+// Returns the commission data
+router.route('/commission/:username').get((req, res) => {
+  Comm.findOne({ where: {username: req.params.username}}, function (err, obj) {
+    if (err) {
+      return next(err)
+    } else {
+      res.json(obj)
+    }
+  })
+})
+
 // GET All Commission objects and their data
 // Returns as JSON array
 router.get('/commissions', (req, res) => {
